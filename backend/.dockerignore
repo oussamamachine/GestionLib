@@ -1,0 +1,15 @@
+# Backend .dockerignore
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+**/.vscode/
+**/.git/
+**/.gitignore
+**/node_modules/
+**/appsettings.Development.json
+**/Dockerfile
+**/.dockerignore
+**/*.md
+**/Tests/
+**/.env
