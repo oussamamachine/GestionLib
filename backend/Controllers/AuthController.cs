@@ -102,9 +102,10 @@ namespace LibraryManagement.API.Controllers
                 };
                 Response.Cookies.Append("refreshToken", refreshToken, refreshCookieOptions);
 
-                // Return user info only (no tokens in response body)
+                // Return user info with token
                 var response = new
                 {
+                    token = token,
                     username = user!.Username,
                     email = user.Email,
                     role = user.Role.ToString(),

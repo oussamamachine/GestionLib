@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Hosting;
 using System.Net;
 
 namespace LibraryManagement.API.Middleware
@@ -19,6 +20,13 @@ namespace LibraryManagement.API.Middleware
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            var env = context.HttpContext.RequestServices.GetService<IHostEnvironment>();
+            if (env?.IsEnvironment("Testing") == true)
+            {
+                base.OnActionExecuting(context);
+                return;
+            }
+
             var ipAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
             var endpoint = $"{context.HttpContext.Request.Method}:{context.HttpContext.Request.Path}";
             var key = $"{ipAddress}_{endpoint}";

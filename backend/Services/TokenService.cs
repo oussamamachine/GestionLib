@@ -11,12 +11,12 @@ namespace LibraryManagement.API.Services
 
     public class TokenService : ITokenService
     {
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
         private readonly ILogger<TokenService> _logger;
         private static readonly Dictionary<string, (int UserId, DateTime ExpiresAt)> _refreshTokens = new();
         private static readonly object _lock = new object();
 
-        public TokenService(JwtService jwtService, ILogger<TokenService> logger)
+        public TokenService(IJwtService jwtService, ILogger<TokenService> logger)
         {
             _jwtService = jwtService;
             _logger = logger;

@@ -17,7 +17,7 @@ namespace LibraryManagement.Tests.UnitTests.Services
     {
         private readonly Mock<IUnitOfWork> _mockUnitOfWork;
         private readonly Mock<IRepository<User>> _mockUserRepository;
-        private readonly Mock<JwtService> _mockJwtService;
+        private readonly Mock<IJwtService> _mockJwtService;
         private readonly Mock<ILogger<UserService>> _mockLogger;
         private readonly UserService _userService;
 
@@ -25,7 +25,7 @@ namespace LibraryManagement.Tests.UnitTests.Services
         {
             _mockUnitOfWork = new Mock<IUnitOfWork>();
             _mockUserRepository = new Mock<IRepository<User>>();
-            _mockJwtService = new Mock<JwtService>(null!);
+            _mockJwtService = new Mock<IJwtService>();
             _mockLogger = new Mock<ILogger<UserService>>();
 
             _mockUnitOfWork.Setup(u => u.Users).Returns(_mockUserRepository.Object);

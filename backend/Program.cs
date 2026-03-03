@@ -181,7 +181,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Register application services
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -208,21 +208,24 @@ builder.Logging.AddDebug();
 
 var app = builder.Build();
 
-// Seed data on startup
-using (var scope = app.Services.CreateScope())
+// Seed data on startup (skip in Testing environment)
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var services = scope.ServiceProvider;
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        var db = services.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureCreated();
-        EnsureUserLockoutColumns(db);
-        LibraryManagement.API.Seed.SeedData.Initialize(db);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+        var services = scope.ServiceProvider;
+        try
+        {
+            var db = services.GetRequiredService<ApplicationDbContext>();
+            db.Database.EnsureCreated();
+            EnsureUserLockoutColumns(db);
+            LibraryManagement.API.Seed.SeedData.Initialize(db);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database.");
+        }
     }
 }
 
@@ -262,6 +265,12 @@ else
 static void EnsureUserLockoutColumns(ApplicationDbContext db)
 {
     var providerName = db.Database.ProviderName ?? string.Empty;
+
+    if (!providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) &&
+        !providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+    {
+        return;
+    }
 
     using var connection = db.Database.GetDbConnection();
     if (connection.State != ConnectionState.Open)
