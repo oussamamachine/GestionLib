@@ -15,7 +15,7 @@ namespace LibraryManagement.API.Services
         public int ExpiryMinutes { get; set; }
     }
 
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly JwtSettings _settings;
 

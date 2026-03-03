@@ -8,10 +8,10 @@ namespace LibraryManagement.API.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IUnitOfWork unitOfWork, JwtService jwtService, ILogger<UserService> logger)
+        public UserService(IUnitOfWork unitOfWork, IJwtService jwtService, ILogger<UserService> logger)
         {
             _unitOfWork = unitOfWork;
             _jwtService = jwtService;

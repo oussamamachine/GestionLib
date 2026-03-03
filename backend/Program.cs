@@ -181,7 +181,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Register application services
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -208,21 +208,24 @@ builder.Logging.AddDebug();
 
 var app = builder.Build();
 
-// Seed data on startup
-using (var scope = app.Services.CreateScope())
+// Seed data on startup (skip in Testing environment)
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var services = scope.ServiceProvider;
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        var db = services.GetRequiredService<ApplicationDbContext>();
-        db.Database.EnsureCreated();
-        EnsureUserLockoutColumns(db);
-        LibraryManagement.API.Seed.SeedData.Initialize(db);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while seeding the database.");
+        var services = scope.ServiceProvider;
+        try
+        {
+            var db = services.GetRequiredService<ApplicationDbContext>();
+            db.Database.EnsureCreated();
+            EnsureUserLockoutColumns(db);
+            LibraryManagement.API.Seed.SeedData.Initialize(db);
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database.");
+        }
     }
 }
 
@@ -263,6 +266,14 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
 {
     var providerName = db.Database.ProviderName ?? string.Empty;
 
+    // Provider names are "Microsoft.EntityFrameworkCore.Sqlite" and "Microsoft.EntityFrameworkCore.SqlServer"
+    var isSqlite = providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase);
+    var isSqlServer = providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase);
+    if (!isSqlite && !isSqlServer)
+    {
+        return;
+    }
+
     using var connection = db.Database.GetDbConnection();
     if (connection.State != ConnectionState.Open)
     {
@@ -273,23 +284,19 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
 
     using (var command = connection.CreateCommand())
     {
-        if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+        if (isSqlite)
         {
             command.CommandText = "PRAGMA table_info('Users');";
         }
-        else if (providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
-        {
-            command.CommandText = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Users';";
-        }
         else
         {
-            return;
+            command.CommandText = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Users';";
         }
 
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {
-            if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+            if (isSqlite)
             {
                 var name = reader[1]?.ToString();
                 if (!string.IsNullOrWhiteSpace(name))
@@ -308,7 +315,7 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
         }
     }
 
-    if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+    if (isSqlite)
     {
         if (!existingColumns.Contains("FailedLoginAttempts"))
         {
@@ -324,7 +331,7 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
             addLockoutEnd.ExecuteNonQuery();
         }
     }
-    else if (providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+    else
     {
         if (!existingColumns.Contains("FailedLoginAttempts"))
         {

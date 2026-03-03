@@ -3,6 +3,7 @@ using LibraryManagement.API.Data;
 using LibraryManagement.API.Domain.Entities;
 using LibraryManagement.API.DTOs.Auth;
 using LibraryManagement.API.DTOs.Books;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +27,10 @@ namespace LibraryManagement.Tests.IntegrationTests
 
         public ApiIntegrationTests(WebApplicationFactory<Program> factory)
         {
+            var dbName = "TestDatabase_" + Guid.NewGuid();
             _factory = factory.WithWebHostBuilder(builder =>
             {
+                builder.UseEnvironment("Testing");
                 builder.ConfigureServices(services =>
                 {
                     // Remove existing DbContext
@@ -37,10 +40,10 @@ namespace LibraryManagement.Tests.IntegrationTests
                         services.Remove(descriptor);
                     }
 
-                    // Add in-memory database
+                    // Add in-memory database with a fixed name so all contexts share the same store
                     services.AddDbContext<ApplicationDbContext>(options =>
                     {
-                        options.UseInMemoryDatabase("TestDatabase_" + Guid.NewGuid());
+                        options.UseInMemoryDatabase(dbName);
                     });
                 });
             });
@@ -143,7 +146,7 @@ namespace LibraryManagement.Tests.IntegrationTests
             {
                 Username = "newuser",
                 Email = "newuser@test.com",
-                Password = "password123",
+                Password = "Password123!",
                 Role = Role.Member
             };
 
@@ -153,7 +156,8 @@ namespace LibraryManagement.Tests.IntegrationTests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<dynamic>();
-            result.Should().NotBeNull();
+            // Cast to object? required because extension methods don't work directly on dynamic (JsonElement)
+            ((object?)result).Should().NotBeNull();
         }
 
         #endregion
