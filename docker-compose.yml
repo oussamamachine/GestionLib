@@ -7,7 +7,7 @@ services:
     container_name: library-sqlserver
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourStrong@Passw0rd"
+      SA_PASSWORD: "${SA_PASSWORD}"
       MSSQL_PID: "Express"
     ports:
       - "1433:1433"
@@ -16,7 +16,7 @@ services:
     networks:
       - library-network
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong@Passw0rd" -Q "SELECT 1" || exit 1
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT 1" || exit 1
       interval: 10s
       timeout: 3s
       retries: 10
@@ -31,8 +31,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=LibraryManagement;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True
-      - JwtSettings__Secret=your-super-secret-key-min-32-chars-long-for-production
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=LibraryManagement;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
+      - JwtSettings__Secret=${JWT_SECRET}
       - JwtSettings__Issuer=LibraryManagementAPI
       - JwtSettings__Audience=LibraryManagementClient
       - JwtSettings__ExpiryMinutes=60
@@ -51,7 +51,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - VITE_API_URL=http://localhost:5000/api
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:5000/api}
     container_name: library-frontend
     ports:
       - "3000:80"

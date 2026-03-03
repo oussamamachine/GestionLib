@@ -11,24 +11,15 @@ import './index.css';
 // Protected route component that checks authentication and role
 function Protected({ children, roles }) {
   const { user } = useAuth();
-  
-  console.log('Protected route check:', { 
-    hasUser: !!user, 
-    username: user?.username,
-    role: user?.role, 
-    requiredRoles: roles 
-  });
-  
+
   if (!user) {
-    console.log('No user found - redirecting to login');
     return <Navigate to="/login" replace />;
   }
-  
+
   if (roles && !roles.includes(user.role)) {
-    console.log('User role not authorized - redirecting to login');
     return <Navigate to="/login" replace />;
   }
-  
+
   return children;
 }
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// ✅ Set API URL to match your running backend
+// ✅ Set API URL to match your running backend (configure via VITE_API_URL in .env)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
 
 // Create axios instance with credentials enabled for HttpOnly cookies
@@ -32,7 +32,6 @@ api.interceptors.response.use(
       if (error.response.status === 401) {
         // Check if this is a login request - don't redirect in that case
         if (!error.config.url.includes('/auth/login')) {
-          console.log('401 Unauthorized - redirecting to login')
           // Only clear user info (token is in HttpOnly cookie, managed by browser)
           localStorage.removeItem('user');
           // Don't redirect if already on login page

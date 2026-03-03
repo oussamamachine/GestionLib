@@ -15,9 +15,7 @@ export function AuthProvider({ children }) {
     // read user info from localStorage if available
     try {
       const raw = localStorage.getItem('user')
-      const userData = raw ? JSON.parse(raw) : null
-      console.log('AuthProvider initialized with user:', userData)
-      return userData
+      return raw ? JSON.parse(raw) : null
     } catch (err) {
       console.error('Error loading user from localStorage:', err)
       return null
@@ -32,9 +30,7 @@ export function AuthProvider({ children }) {
     const userObj = { username: uname, role, expiresAt, email }
     localStorage.setItem('user', JSON.stringify(userObj))
     setUser(userObj)
-    
-    console.log('Login successful. Token expires at:', expiresAt)
-    
+
     // redirect based on role
     if (role === 'Admin') navigate('/admin')
     else if (role === 'Librarian') navigate('/librarian')
@@ -64,16 +60,9 @@ export function AuthProvider({ children }) {
       const expiryDate = new Date(user.expiresAt)
       const now = new Date()
       const timeUntilExpiry = expiryDate.getTime() - now.getTime()
-      
-      console.log('Token expiry check:', {
-        expiresAt: expiryDate.toISOString(),
-        now: now.toISOString(),
-        minutesRemaining: Math.floor(timeUntilExpiry / 60000)
-      })
-      
+
       // Only logout if token is actually expired (with 30 second buffer)
       if (timeUntilExpiry < -30000) {
-        console.log('Token expired, logging out')
         logout()
       }
     }

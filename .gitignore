@@ -1,0 +1,23 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.txt
+!README*.txt
+!LICENSE*.txt
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+desktop.ini

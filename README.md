@@ -20,7 +20,7 @@ A comprehensive library management system demonstrating **enterprise-level archi
 - 🐳 **Containerized**: Docker & docker-compose for easy deployment
 - 🚀 **CI/CD Ready**: GitHub Actions workflow with automated testing
 - 📊 **Production Monitoring**: Request logging with correlation IDs, structured logging
-- 📚 **Well Documented**: Comprehensive API docs, architecture diagrams, deployment guides
+- 📚 **Well Documented**: Architecture diagrams, inline comments, Swagger API docs
 
 ## ✨ Features
 
@@ -128,11 +128,14 @@ For detailed architecture documentation, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 Run the automated setup script:
 ```bash
-git clone <repository-url>
-cd gestion-lib
+git clone https://github.com/oussamamachine/GestionLib.git
+cd GestionLib
+setup.bat
 ```
 
-### 2. Setup Backend
+### Option 2: Manual Setup
+
+#### 2. Setup Backend
 
 ```bash
 cd backend
@@ -163,9 +166,13 @@ npm run dev
 
 Frontend will be available at: `http://localhost:5173`
 
-### Option 2: Docker Compose (Recommended for Production)
+### Option 3: Docker Compose (Recommended for Production)
 
 ```bash
+# Copy and configure environment variables
+cp .env.example .env
+# Edit .env with your values
+
 # Start all services (backend, frontend, SQL Server)
 docker-compose up -d
 
@@ -220,13 +227,8 @@ npm run test:watch
 
 ## 📚 Documentation
 
-Comprehensive documentation is available:
-
-- **[API Documentation](API_DOCUMENTATION.md)** - Complete REST API reference with examples
 - **[Architecture Guide](ARCHITECTURE.md)** - System design, patterns, and data flow diagrams
-- **[Deployment Guide](DEPLOYMENT.md)** - Step-by-step deployment to Azure, Railway, Render, or self-hosted
-- **[Quick Start Guide](QUICK_START.md)** - Get up and running in 5 minutes
-- **[Enhancements Log](ENHANCEMENTS.md)** - All improvements and features added
+- **[Swagger UI](https://localhost:5001/swagger)** - Interactive API reference (requires running backend)
 
 ## 📊 Project Statistics
 
@@ -265,21 +267,6 @@ Comprehensive documentation is available:
 - **Environment Management**: Secure secrets and configuration
 - **Health Checks**: Container orchestration with health monitoring
 - **Cloud Deployment**: Ready for Azure, AWS, GCP, Railway, or Render
-
-## 📱 Screenshots
-
-### Dashboard Views
-![Admin Dashboard - Overview with statistics and quick actions]
-![Librarian Dashboard - Book and loan management interface]
-![Member Dashboard - Browse books and view active loans]
-
-### Key Features
-![Book Management - CRUD operations with search and filters]
-![Loan Processing - Create and manage book loans]
-![User Management - Admin panel for user administration]
-![Authentication - Login and registration flows]
-
-*Screenshots available in `/docs/screenshots/` directory*
 
 ## 🗺️ Roadmap
 
@@ -329,11 +316,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Your Name**
-- Portfolio: [your-portfolio.com](https://your-portfolio.com)
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+**Oussama**
+- GitHub: [@oussamamachine](https://github.com/oussamamachine)
 
 ## 🙏 Acknowledgments
 
@@ -345,9 +329,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 If you have questions or need help:
-- 📧 Email: your.email@example.com
-- 💬 Issues: [GitHub Issues](https://github.com/yourusername/library-management/issues)
-- 📖 Documentation: Check the `/docs` folder
+- 💬 Issues: [GitHub Issues](https://github.com/oussamamachine/GestionLib/issues)
+- 📖 Documentation: See the docs files in this repository
 
 ## ⭐ Show Your Support
 
@@ -357,99 +340,3 @@ Give a ⭐️ if this project helped you or you found it interesting!
 
 **Built with ❤️ using .NET, React, and modern web technologies**
 
-```env
-VITE_API_URL=https://localhost:5001/api
-```
-
-## 📦 Technologies Used
-
-### Backend
-- ASP.NET Core 8.0
-- Entity Framework Core
-- SQL Server
-- JWT Bearer Authentication
-- BCrypt.NET
-- Swagger/OpenAPI
-
-### Frontend
-- React 18
-- Vite 5
-- Tailwind CSS 3
-- React Router DOM 6
-- Axios
-- React Hot Toast
-
-## 🚢 Deployment
-
-### Backend Deployment
-```bash
-cd backend
-dotnet publish -c Release -o ./publish
-```
-
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-# Deploy the 'dist' folder to your web server
-```
-
-## 🧪 Testing
-
-### Testing Backend with Swagger
-1. Run backend: `dotnet run`
-2. Open: `https://localhost:5001/swagger`
-3. Login using demo credentials
-4. Use token for authenticated endpoints
-
-### Testing Frontend
-1. Run frontend: `npm run dev`
-2. Login with demo credentials
-3. Test all role-based features
-
-## 📖 Development Guide
-
-### Adding a New Feature
-
-**Backend:**
-1. Create entity in `Domain/Entities/`
-2. Add DbSet to `ApplicationDbContext`
-3. Create repository interface and implementation
-4. Create service interface and implementation
-5. Create DTOs
-6. Create controller
-7. Add to dependency injection in `Program.cs`
-
-**Frontend:**
-1. Create page component in `pages/`
-2. Add API calls in `services/api.js`
-3. Add route in `App.jsx`
-4. Update navigation in `Dashboard.jsx`
-
-## 🐛 Troubleshooting
-
-### Backend Issues
-- **Database connection error**: Check connection string in `appsettings.json`
-- **Port already in use**: Change port in `Properties/launchSettings.json`
-- **JWT errors**: Verify JWT secret is configured
-
-### Frontend Issues
-- **API connection error**: Check `VITE_API_URL` in `.env`
-- **CORS error**: Verify backend CORS configuration
-- **Token expired**: Clear localStorage and login again
-
-## 📝 License
-
-MIT License - feel free to use this project for learning or production.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📞 Support
-
-For issues, questions, or suggestions, please create an issue in the repository.
-
----
-
-**Built with ❤️ using ASP.NET Core and React**
