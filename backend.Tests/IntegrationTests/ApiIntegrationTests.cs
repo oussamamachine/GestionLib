@@ -156,6 +156,7 @@ namespace LibraryManagement.Tests.IntegrationTests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<dynamic>();
+            // Cast to object? required because extension methods don't work directly on dynamic (JsonElement)
             ((object?)result).Should().NotBeNull();
         }
 

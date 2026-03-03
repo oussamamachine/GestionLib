@@ -266,8 +266,10 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
 {
     var providerName = db.Database.ProviderName ?? string.Empty;
 
-    if (!providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) &&
-        !providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+    // Provider names are "Microsoft.EntityFrameworkCore.Sqlite" and "Microsoft.EntityFrameworkCore.SqlServer"
+    var isSqlite = providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase);
+    var isSqlServer = providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase);
+    if (!isSqlite && !isSqlServer)
     {
         return;
     }
@@ -282,23 +284,19 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
 
     using (var command = connection.CreateCommand())
     {
-        if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+        if (isSqlite)
         {
             command.CommandText = "PRAGMA table_info('Users');";
         }
-        else if (providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
-        {
-            command.CommandText = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Users';";
-        }
         else
         {
-            return;
+            command.CommandText = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Users';";
         }
 
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {
-            if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+            if (isSqlite)
             {
                 var name = reader[1]?.ToString();
                 if (!string.IsNullOrWhiteSpace(name))
@@ -317,7 +315,7 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
         }
     }
 
-    if (providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase))
+    if (isSqlite)
     {
         if (!existingColumns.Contains("FailedLoginAttempts"))
         {
@@ -333,7 +331,7 @@ static void EnsureUserLockoutColumns(ApplicationDbContext db)
             addLockoutEnd.ExecuteNonQuery();
         }
     }
-    else if (providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+    else
     {
         if (!existingColumns.Contains("FailedLoginAttempts"))
         {
