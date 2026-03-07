@@ -156,22 +156,38 @@ I picked SQLite to keep the setup friction low (no database server needed), and 
 
 ## Screenshots
 
-> Replace placeholders with real screenshots when ready.
+### Login
+![Login](Screenshots/login.png)
 
-### Landing / Login Page
-![Login Page](Screenshots/landingpage.png)
+### Admin Dashboard
+![Admin Dashboard](Screenshots/admindasboard.png)
+
+### Admin — Books
+![Admin Books](Screenshots/adminbooks.png)
+
+### Admin — Loans
+![Admin Loans](Screenshots/adminloans.png)
+
+### Admin — Users
+![Admin Users](Screenshots/adminusers.png)
+
+### Librarian Dashboard
+![Librarian Dashboard](Screenshots/librariandasboard.png)
+
+### Librarian — Books Management
+![Librarian Books](Screenshots/librarian-books-management.png)
+
+### Librarian — Loans Tracker
+![Librarian Loans](Screenshots/librarian-loans-tracker.png)
 
 ### Member Dashboard
-![Dashboard](Screenshots/dashboard.png)
+![Member Dashboard](Screenshots/member-dashboard.png)
 
-### Book Catalog
-![Book Catalog](Screenshots/books.png)
+### Member — Browse Catalog
+![Member Browse](Screenshots/member-browse-store.png)
 
-### Loan Management
-![Loans](Screenshots/loans.png)
-
-### Admin Panel
-![Admin Panel](Screenshots/admin.png)
+### Member — Active Loans
+![Member Loans](Screenshots/member-active-loans.png)
 
 ---
 
